@@ -23,7 +23,7 @@ jobs:
           gitleaks version
 
       - name: Run Gitleaks scan
-        run: gitleaks detect --source . --verbose --redact --report-path gitleaks-report.json
+        run:   run: gitleaks detect --no-git --source . --config .gitleaks.toml --verbose --redact --report-path gitleaks-report.json
 
       - name: Upload Gitleaks report
         if: always()
