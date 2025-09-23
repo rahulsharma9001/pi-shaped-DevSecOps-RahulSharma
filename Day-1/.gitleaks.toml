@@ -1,4 +1,7 @@
+title = "Custom Gitleaks Config"
+
 [secrets]
+
 [[rules]]
 id = "api-key-rule"
 description = "Custom API Key Rule"
@@ -10,3 +13,9 @@ id = "password-rule"
 description = "Custom Password Rule"
 regex = '''(supersecretpassword[0-9]+)'''
 tags = ["password"]
+
+[allowlist]
+description = "Ignore downloaded tools and vendor binaries"
+paths = [
+  '''Day-1/tools/.*'''
+]
