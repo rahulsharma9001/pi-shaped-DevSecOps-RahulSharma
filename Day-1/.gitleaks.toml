@@ -1,10 +1,12 @@
 [secrets]
 [[rules]]
+id = "api-key-rule"
 description = "Custom API Key Rule"
 regex = '''(sk_test_[a-zA-Z0-9]{10})'''
 tags = ["api-key"]
 
 [[rules]]
+id = "password-rule"
 description = "Custom Password Rule"
 regex = '''(supersecretpassword[0-9]+)'''
 tags = ["password"]
