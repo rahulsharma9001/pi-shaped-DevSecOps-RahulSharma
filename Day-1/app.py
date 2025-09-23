@@ -13,4 +13,4 @@ def home():
     return f"Welcome! API Key: {API_KEY} | DB Pass: {DB_PASSWORD}"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
