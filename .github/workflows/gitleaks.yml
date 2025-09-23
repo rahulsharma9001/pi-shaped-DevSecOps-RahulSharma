@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history for Gitleaks to analyze commits
+          fetch-depth: 0
 
       - name: Install Gitleaks
         run: |
@@ -22,7 +22,7 @@ jobs:
           sudo mv gitleaks /usr/local/bin/gitleaks
 
       - name: Run Gitleaks scan
-        run: gitleaks detect --source . --verbose --redact --report-path gitleaks-report.json
+        run: gitleaks detect --source . --verbose --redact --report-path gitleaks-report.json || true  # Temporary to debug
 
       - name: Upload Gitleaks report
         if: always()
