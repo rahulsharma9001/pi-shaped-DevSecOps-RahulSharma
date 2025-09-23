@@ -1,11 +1,12 @@
 from flask import Flask
+import os
 
 app = Flask(__name__)
 
-# Hardcoded secrets (fake for demo) - to be detected by Gitleaks
+# Importing .env file for using secrets instead of hardcoding them
 
-API_KEY = "REMOVED"          # Fake Stripe-like API key
-DB_PASSWORD = "REMOVED"  # Fake DB password
+API_KEY = os.getenv('API_KEY', 'default-key')
+DB_PASSWORD = os.getenv('DB_PASSWORD', 'default-pass')
 
 @app.route('/')
 def home():
