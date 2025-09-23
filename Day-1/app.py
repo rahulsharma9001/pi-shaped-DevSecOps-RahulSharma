@@ -10,7 +10,7 @@ DB_PASSWORD = os.getenv('DB_PASSWORD', 'default-pass')
 
 @app.route('/')
 def home():
-    return f"Welcome! API Key: {API_KEY} | DB Pass: {DB_PASSWORD}"
+    return f"Hello, This is a demo message for the Security compliance workshop !!!!!"
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
