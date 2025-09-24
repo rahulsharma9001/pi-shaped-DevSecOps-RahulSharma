@@ -58,7 +58,7 @@ Used a simple Flask app (`app.py`) with initially hardcoded secrets.
 - Built Docker image: `docker build -t flask-app .`
 - Ran: `docker run -p 5000:5000 --env-file .env flask-app`
 - Screenshot:
-![Deployment](Day-1/screenshots/Deployed/Running-Deployed-Container.png)
+![Deployment](screenshots/Deployed/Running-Deployed-Container.png)
 - Works post-cleanup; secrets from env vars.
 
 ## Lessons Learned
