@@ -7,5 +7,4 @@ __pycache__/
 venv/
 *.DS_Store
 Day-1/secrets.txt
-.git.bfg-report
 Day-1/tools/gitleaks_8.28.0_linux_x64
