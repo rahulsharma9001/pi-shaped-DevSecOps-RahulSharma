@@ -30,18 +30,17 @@ Used a simple Flask app (`app.py`) with initially hardcoded secrets.
 - Integrated in GitHub Actions for CI automation (workflow in `.github/workflows/gitleaks.yml`).
 
 Before removal:
-![Gitleaks Before](Day-1/screenshots/GitLeaksScanWithSecrets/ScanReport-2.png)
+![Gitleaks Before](screenshots/GitLeaksScanWithSecrets/ScanReport-2.png)
 
-![Gitleaks Before](Day-1/screenshots/GitLeaksScanWithSecrets/Pipeline-Scan-Report.png)
+![Gitleaks Before](screenshots/GitLeaksScanWithSecrets/Pipeline-Scan-Report.png)
 
-![Gitleaks Before](screenshots/gitleaks-before.png)
 
 
 After removal:
 
-![Gitleaks After](Day-1/screenshots/GitLeaksScanWithoutSecrets/Gitleaks-local-report.png)
+![Gitleaks After](screenshots/GitLeaksScanWithoutSecrets/Gitleaks-local-report.png)
 
-![Gitleaks After](Day-1/screenshots/GitLeaksScanWithoutSecrets/Gitleaks-CI-report.png)
+![Gitleaks After](screenshots/GitLeaksScanWithoutSecrets/Gitleaks-CI-report.png)
 
 
 ## Steps to Remove Secrets
