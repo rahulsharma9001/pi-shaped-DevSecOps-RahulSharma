@@ -72,13 +72,13 @@ This configuration ensures a seamless, automated security scan integrated into t
 ## Screenshots
 This section contains visual evidence of the setup, execution, and findings from the ZAP scan and CI/CD pipeline.
 
-- ![ZAP Report Screenshot:](Day-2/app/screenshot/Zap-report.png)
+- ![ZAP Report Screenshot:](app/screenshot/Zap-report.png)
 
-- ![GitHub Actions Workflow Run:](Day-2/app/screenshot/Green-CI.png)
+- ![GitHub Actions Workflow Run:](app/screenshot/Green-CI.png)
 
-- ![Local SQLi Test Screenshot:](Day-2/app/screenshot/Flask-running-app.png)
+- ![Local SQLi Test Screenshot:](app/screenshot/Flask-running-app.png)
 
-- ![CI Artifact Download:](Day-2/app/screenshot/CI-report-with-artifact.png)
+- ![CI Artifact Download:](app/screenshot/CI-report-with-artifact.png)
 
 ---
 
