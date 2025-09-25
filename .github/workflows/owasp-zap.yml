@@ -36,26 +36,28 @@ jobs:
         run: |
           cd Day-2/app
           python app.py &
-          sleep 15
+          sleep 20
           curl -s http://localhost:5000 || echo "App starting..."
 
-      # 5️⃣ Run OWASP ZAP Scan (FIXED - disable all uploads)
-      - name: Run OWASP ZAP Scan
-        uses: zaproxy/action-baseline@v0.13.0
-        with:
-          target: 'http://localhost:5000'
-          allow_issue_writing: false
-          upload_artifacts: false  # ✅ Disable ZAP's artifact upload
-          artifact_name: "zap-reports"  # ✅ Use valid name if needed
-          cmd_options: '-r report_html.html -J report_json.json -w report_md.md'
+      # 5️⃣ Run ZAP directly using Docker (BYPASS the action completely)
+      - name: Run ZAP Scan Directly
+        run: |
+          docker run --rm \
+            -v $(pwd):/zap/wrk/:rw \
+            --network host \
+            -t ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py \
+            -t http://localhost:5000 \
+            -r report_html.html \
+            -J report_json.json \
+            -w report_md.md \
+            -a
 
       # 6️⃣ Create artifacts directory and copy reports
       - name: Prepare reports
         run: |
           mkdir -p zap-reports
-          # Check what files were generated
           ls -la
-          # Copy all report files
           cp *.html *.json *.md zap-reports/ 2>/dev/null || true
           echo "Reports copied:"
           ls -la zap-reports/
@@ -77,9 +79,4 @@ jobs:
           echo "- ⚠️ Warnings: 8 issues" >> $GITHUB_STEP_SUMMARY
           echo "- ❌ Failures: 0" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📁 **Reports Generated:**" >> $GITHUB_STEP_SUMMARY
-          echo "- HTML Report: report_html.html" >> $GITHUB_STEP_SUMMARY
-          echo "- JSON Report: report_json.json" >> $GITHUB_STEP_SUMMARY
-          echo "- Markdown Report: report_md.md" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📥 **Download from Artifacts:** zap-security-reports" >> $GITHUB_STEP_SUMMARY
+          echo "📁 **Reports available in Artifacts:** zap-security-reports" >> $GITHUB_STEP_SUMMARY
