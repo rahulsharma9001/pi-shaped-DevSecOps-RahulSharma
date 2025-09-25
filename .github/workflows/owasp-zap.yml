@@ -46,12 +46,18 @@ jobs:
           target: 'http://localhost:5000'
           fail_action: false  # Allow warnings
         env:
-          ZAP_NO_ISSUE_CREATION: "true"  # Disable GitHub issue creation
+          ZAP_DISABLE_GITHUB_ISSUES: "true"  # Attempt to disable issue creation
 
       - name: Copy ZAP Report
         run: |
           mkdir -p Day-2/artifacts
-          cp report_html.html Day-2/artifacts/zap-report.html || { echo "Default report not found, checking alternatives"; cp report_json.json Day-2/artifacts/zap-report.json && mv Day-2/artifacts/zap-report.json Day-2/artifacts/zap-report.html; }
+          if [ -f report_html.html ]; then
+            cp report_html.html Day-2/artifacts/zap-report.html
+            echo "Report copied successfully"
+          else
+            echo "Default report not found, scan may have failed"
+            exit 1
+          fi
 
       - name: Upload ZAP Report Artifact
         uses: actions/upload-artifact@v4
@@ -63,4 +69,8 @@ jobs:
       - name: Display ZAP Report Summary
         run: |
           echo "## Day-2 ZAP Scan Results" >> $GITHUB_STEP_SUMMARY
-          cat Day-2/artifacts/zap-report.html | grep -oP '(?<=<h2>).*?(?=</h2>)' | head -5 >> $GITHUB_STEP_SUMMARY || echo "Report summary unavailable"
+          if [ -f Day-2/artifacts/zap-report.html ]; then
+            cat Day-2/artifacts/zap-report.html | grep -oP '(?<=<h2>).*?(?=</h2>)' | head -5 >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Report summary unavailable" >> $GITHUB_STEP_SUMMARY
+          fi
