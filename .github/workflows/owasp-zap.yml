@@ -47,7 +47,6 @@ jobs:
           fail_action: false           # Do not fail workflow on warnings/errors
           allow_issue_writing: false   # Disable GitHub issue creation
           cmd_options: '-r report_html.html -J report_json.json -w report_md.md'
-          artifact_name: 'day2-zap-reports'
 
       - name: Copy ZAP Reports
         run: |
@@ -60,14 +59,14 @@ jobs:
       - name: Upload ZAP Report Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: day2-zap-reports
+          name: zapreports
           path: Day-2/artifacts/
           retention-days: 7
 
       - name: Display ZAP Report Summary
         run: |
           echo "## 🔒 Day-2 ZAP Scan Results" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Reports generated and uploaded as artifact: **day2-zap-reports**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Reports generated and uploaded as artifact: **zapreports**" >> $GITHUB_STEP_SUMMARY
           echo "- 📂 Contains: zap-report.html, zap-report.json, zap-report.md" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "👉 [Download ZAP Reports from workflow artifacts](./artifacts/day2-zap-reports)" >> $GITHUB_STEP_SUMMARY
+          echo "👉 [Download ZAP Reports from workflow artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
