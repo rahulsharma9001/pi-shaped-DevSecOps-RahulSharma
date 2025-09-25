@@ -3,8 +3,12 @@ name: Gitleaks Scan
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'Day-1/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'Day-1/**'
 
 jobs:
   scan:
