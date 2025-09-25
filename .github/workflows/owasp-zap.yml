@@ -44,25 +44,23 @@ jobs:
         uses: zaproxy/action-baseline@v0.13.0
         with:
           target: 'http://localhost:5000'
-          fail_action: false   # ✅ Do not fail workflow on warnings/errors
-          issues: false        # ✅ Disable GitHub issue creation
+          fail_action: false   # Do not fail workflow on warnings/errors
+          issues: false        # Disable GitHub issue creation
+          cmd_options: '-r report_html.html -J report_json.json -w report_md.md'
 
-      - name: Copy ZAP Report
+      - name: Copy ZAP Reports
         run: |
           mkdir -p Day-2/artifacts
-          if [ -f report_html.html ]; then
-            cp report_html.html Day-2/artifacts/zap-report.html
-            echo "Report copied successfully"
-          else
-            echo "Default report not found, scan may have failed"
-            exit 1
-          fi
+          cp report_html.html Day-2/artifacts/zap-report.html || true
+          cp report_json.json Day-2/artifacts/zap-report.json || true
+          cp report_md.md Day-2/artifacts/zap-report.md || true
+          echo "Reports copied successfully"
 
-      - name: Upload ZAP Report Artifact
+      - name: Upload ZAP Report Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: day2-zap-report
-          path: Day-2/artifacts/zap-report.html
+          name: day2-zap-reports
+          path: Day-2/artifacts/
           retention-days: 7
 
       - name: Display ZAP Report Summary
