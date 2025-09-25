@@ -44,8 +44,9 @@ jobs:
         uses: zaproxy/action-baseline@v0.13.0
         with:
           target: 'http://localhost:5000'
-          fail_action: false           # Do not fail workflow on warnings/errors
-          allow_issue_writing: false   # Disable GitHub issue creation
+          fail_action: false             # Do not fail workflow on warnings/errors
+          allow_issue_writing: false     # Disable GitHub issue creation
+          allow_artifact_creation: false # Disable ZAP internal artifact upload
           cmd_options: '-r report_html.html -J report_json.json -w report_md.md'
 
       - name: Copy ZAP Reports
@@ -69,4 +70,4 @@ jobs:
           echo "- ✅ Reports generated and uploaded as artifact: **zapreports**" >> $GITHUB_STEP_SUMMARY
           echo "- 📂 Contains: zap-report.html, zap-report.json, zap-report.md" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "👉 [Download ZAP Reports from workflow artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "👉 [Download ZAP Reports from workflow artifacts](./artifacts/zapreports)" >> $GITHUB_STEP_SUMMARY
