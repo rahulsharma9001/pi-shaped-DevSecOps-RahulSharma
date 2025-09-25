@@ -13,26 +13,27 @@ on:
 jobs:
   zap-scan:
     runs-on: ubuntu-latest
-    services:
-      app:
-        image: python:3.9-slim
-        command: >
-          sh -c "pip install -r requirements.txt --timeout 100 &&
-                 python app.py"
-        volumes:
-          - .:/workspace
-        working_dir: /workspace/Day-2/app
-        ports:
-          - 5000:5000
-        options: >-
-          --health-cmd "curl -f http://localhost:5000 || exit 1"
-          --health-interval 10s
-          --health-timeout 10s
-          --health-retries 5
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          cd Day-2/app
+          pip install -r requirements.txt --timeout 100
+
+      - name: Run Flask app
+        run: |
+          cd Day-2/app
+          python app.py &
+          sleep 10  # Wait for app to start
+        background: true
 
       - name: Install ZAP dependencies
         run: |
