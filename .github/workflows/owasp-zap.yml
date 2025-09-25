@@ -44,9 +44,8 @@ jobs:
         uses: zaproxy/action-baseline@v0.13.0
         with:
           target: 'http://localhost:5000'
-          fail_action: false  # Allow warnings
-        env:
-          ZAP_DISABLE_GITHUB_ISSUES: "true"  # Attempt to disable issue creation
+          fail_action: false   # ✅ Do not fail workflow on warnings/errors
+          issues: false        # ✅ Disable GitHub issue creation
 
       - name: Copy ZAP Report
         run: |
