@@ -29,53 +29,45 @@ jobs:
       - name: Install dependencies
         run: |
           cd Day-2/app
-          pip install --upgrade pip
-          pip install -r requirements.txt --timeout 100
+          pip install -r requirements.txt
 
       # 4️⃣ Run Flask app in background
       - name: Run Flask app
         run: |
           cd Day-2/app
           python app.py &
-          sudo apt-get update && sudo apt-get install -y curl
-          timeout 30s bash -c 'until curl -s localhost:5000 > /dev/null; do sleep 1; done' || echo "App startup timed out"
+          sleep 10
+          curl -s http://localhost:5000 || echo "App starting..."
 
-      # 5️⃣ Install ZAP dependencies
-      - name: Install ZAP dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y default-jre
-
-      # 6️⃣ Run OWASP ZAP Scan
+      # 5️⃣ Run OWASP ZAP Scan (Simplified - only generate reports)
       - name: Run OWASP ZAP Scan
         uses: zaproxy/action-baseline@v0.13.0
         with:
           target: 'http://localhost:5000'
-          fail_action: false           # Do not fail workflow on warnings/errors
-          allow_issue_writing: false   # Disable GitHub issue creation
-          artifact_name: ""            # ✅ Disable ZAP artifact upload
           cmd_options: '-r report_html.html -J report_json.json -w report_md.md'
 
-      # 7️⃣ Copy reports to artifacts folder
-      - name: Copy ZAP Reports
+      # 6️⃣ Create artifacts directory and copy reports
+      - name: Prepare reports
         run: |
-          mkdir -p Day-2/artifacts
-          cp report_html.html Day-2/artifacts/zap-report.html || true
-          cp report_json.json Day-2/artifacts/zap-report.json || true
-          cp report_md.md Day-2/artifacts/zap-report.md || true
-          echo "Reports copied successfully"
+          mkdir -p zap-reports
+          cp *.html *.json *.md zap-reports/ 2>/dev/null || true
+          ls -la zap-reports/
 
-      # 8️⃣ Upload reports as GitHub Actions artifacts
-      - name: Upload ZAP Report Artifacts
+      # 7️⃣ Upload ZAP reports as artifacts
+      - name: Upload ZAP Reports
         uses: actions/upload-artifact@v4
         with:
-          name: zapreports
-          path: Day-2/artifacts/
-          retention-days: 7
+          name: zap-security-reports
+          path: zap-reports/
+          retention-days: 30
 
-      # 9️⃣ Display ZAP Report Summary in workflow log
-      - name: Display ZAP Report Summary
+      # 8️⃣ Show scan summary
+      - name: Display Scan Summary
         run: |
-          echo "## 🔒 Day-2 ZAP Scan Results" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Reports generated and uploaded as artifact: **zapreports**" >> $GITHUB_STEP_SUMMARY
-          echo "- 📂 Contains: zap-report.html, zap-report.json, zap-report.md" >> $GITHUB_STEP_SUMMARY
+          echo "## ZAP Security Scan Completed" >> $GITHUB_STEP_SUMMARY
+          echo "📊 **Reports Generated:**" >> $GITHUB_STEP_SUMMARY
+          echo "- HTML Report: zap-report.html" >> $GITHUB_STEP_SUMMARY
+          echo "- JSON Report: zap-report.json" >> $GITHUB_STEP_SUMMARY
+          echo "- Markdown Report: zap-report.md" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📁 **Download from Artifacts:** zap-security-reports" >> $GITHUB_STEP_SUMMARY
