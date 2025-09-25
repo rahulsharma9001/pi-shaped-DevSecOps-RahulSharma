@@ -36,23 +36,28 @@ jobs:
         run: |
           cd Day-2/app
           python app.py &
-          sleep 20
-          curl -s http://localhost:5000 || echo "App starting..."
+          sleep 25
+          for i in {1..10}; do
+            if curl -s http://localhost:5000 > /dev/null; then
+              echo "App is running!"
+              break
+            fi
+            sleep 3
+          done
 
-      # 5️⃣ Fix permissions and create reports directory
-      - name: Prepare for ZAP scan
+      # 5️⃣ Create working directory with proper permissions
+      - name: Create ZAP workspace
         run: |
-          sudo chmod 777 $(pwd)
-          mkdir -p zap-reports
-          sudo chmod 777 zap-reports
+          mkdir -p zap-workspace
+          chmod 755 zap-workspace
 
-      # 6️⃣ Run ZAP with proper permissions
-      - name: Run ZAP Scan Directly
+      # 6️⃣ Run ZAP with user mapping
+      - name: Run ZAP Scan
         run: |
           docker run --rm \
-            -v $(pwd)/zap-reports:/zap/wrk/:rw \
+            -v $(pwd)/zap-workspace:/zap/wrk \
             --network host \
-            -u $(id -u):$(id -g) \
+            -u root \
             -t ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py \
             -t http://localhost:5000 \
@@ -60,14 +65,16 @@ jobs:
             -J report_json.json \
             -w report_md.md
 
-      # 7️⃣ Check and list generated reports
-      - name: Check generated reports
+      # 7️⃣ Move reports to artifacts folder
+      - name: Prepare reports
         run: |
-          echo "Generated reports:"
+          mkdir -p zap-reports
+          # Move reports from workspace
+          mv zap-workspace/*.html zap-workspace/*.json zap-workspace/*.md zap-reports/ 2>/dev/null || true
+          # Also check root directory
+          cp *.html *.json *.md zap-reports/ 2>/dev/null || true
+          echo "Final reports:"
           ls -la zap-reports/
-          # Copy reports to root for easier access if needed
-          cp zap-reports/* . 2>/dev/null || true
-          ls -la *.html *.json *.md 2>/dev/null || echo "No reports in root directory"
 
       # 8️⃣ Upload ZAP reports as artifacts
       - name: Upload ZAP Reports
@@ -86,4 +93,4 @@ jobs:
           echo "- ⚠️ Warnings: 9 issues" >> $GITHUB_STEP_SUMMARY
           echo "- ❌ Failures: 0" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📁 **Reports available in Artifacts:** zap-security-reports" >> $GITHUB_STEP_SUMMARY
+          echo "📁 **Download reports from Artifacts tab**" >> $GITHUB_STEP_SUMMARY
