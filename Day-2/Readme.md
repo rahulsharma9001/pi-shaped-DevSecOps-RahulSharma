@@ -72,25 +72,13 @@ This configuration ensures a seamless, automated security scan integrated into t
 ## Screenshots
 This section contains visual evidence of the setup, execution, and findings from the ZAP scan and CI/CD pipeline.
 
-- ZAP Report Screenshot: <img src="screenshot/Zap-report.png" alt="ZAP Report Screenshot showing 8 warnings">
+- ![ZAP Report Screenshot:](screenshot/Zap-report.png)
 
-Captures the scan summary and warning details from the generated zap-report.html.
+- ![GitHub Actions Workflow Run:](screenshot/Green-CI.png)
 
+- ![Local SQLi Test Screenshot:](screenshot/Green-CI.png)
 
-- GitHub Actions Workflow Run: <img src="screenshot/Green-CI.png" alt="GitHub Actions Workflow Run">
-
-Shows the successful execution of the CI pipeline, including the ZAP scan step and artifact upload.
-
-
-- Local SQLi Test Screenshot: <img src="screenshot/Flask-running-app.png" alt="Local SQLi Test Screenshot">
-
-Displays the /login page with the SQLi test (admin' OR '1'='1) and bypass result.
-
-
-- CI Artifact Download: <img src="Day-2/app/screenshot/CI-report-with-artifact.png" alt="CI Artifact Download">
-
-
-Highlights the downloadable zap-reports/ artifact from the Actions tab.
+- ![CI Artifact Download:](screenshot/Flask-running-app.png)
 
 ---
 
