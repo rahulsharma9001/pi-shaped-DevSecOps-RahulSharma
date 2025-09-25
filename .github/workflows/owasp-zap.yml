@@ -44,12 +44,14 @@ jobs:
         uses: zaproxy/action-baseline@v0.13.0
         with:
           target: 'http://localhost:5000'
-          fail_action: false  # Allow warnings to generate report
+          fail_action: false  # Allow warnings
+        env:
+          ZAP_NO_ISSUE_CREATION: "true"  # Disable GitHub issue creation
 
       - name: Copy ZAP Report
         run: |
           mkdir -p Day-2/artifacts
-          cp report_html.html Day-2/artifacts/zap-report.html || echo "Default report not found, using fallback"
+          cp report_html.html Day-2/artifacts/zap-report.html || { echo "Default report not found, checking alternatives"; cp report_json.json Day-2/artifacts/zap-report.json && mv Day-2/artifacts/zap-report.json Day-2/artifacts/zap-report.html; }
 
       - name: Upload ZAP Report Artifact
         uses: actions/upload-artifact@v4
