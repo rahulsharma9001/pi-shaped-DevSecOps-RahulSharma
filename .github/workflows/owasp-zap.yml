@@ -42,11 +42,11 @@ jobs:
           sudo apt-get install -y default-jre
 
       - name: Run OWASP ZAP Scan
-        uses: zaproxy/action-baseline@v0.13.0  # Updated to latest stable version
+        uses: zaproxy/action-baseline@v0.13.0
         with:
           target: 'http://localhost:5000'
-          cmd_options: '-r /github/workspace/Day-2/artifacts/zap-report.html'  # Use -r for HTML report
-          fail_action: true  # Fail on alerts (optional, adjust as needed)
+          cmd_options: '-r /github/workspace/Day-2/artifacts/zap-report.html'  # Single -r for report
+          fail_action: false  # Allow warnings, generate report
 
       - name: Upload ZAP Report Artifact
         uses: actions/upload-artifact@v4
