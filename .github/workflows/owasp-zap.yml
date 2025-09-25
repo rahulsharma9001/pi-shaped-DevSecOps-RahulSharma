@@ -32,7 +32,6 @@ jobs:
         run: |
           cd Day-2/app
           python app.py &
-          # Install curl if needed and wait for app
           apt-get update && apt-get install -y curl
           timeout 30s bash -c 'while ! curl -s localhost:5000 > /dev/null; do sleep 1; done' || echo "App startup timed out"
 
@@ -47,14 +46,10 @@ jobs:
           target: 'http://localhost:5000'
           fail_action: false  # Allow warnings to generate report
 
-      - name: Copy Report to Artifact Path
+      - name: Copy ZAP Report
         run: |
           mkdir -p Day-2/artifacts
           cp report_html.html Day-2/artifacts/zap-report.html || echo "Default report not found, using fallback"
-          # Fallback: If no default, create a basic report with scan summary
-          if [ ! -f Day-2/artifacts/zap-report.html ]; then
-            echo "<html><body><h1>ZAP Scan Summary</h1><p>59 PASS, 8 WARN-NEW</p></body></html>" > Day-2/artifacts/zap-report.html
-          fi
 
       - name: Upload ZAP Report Artifact
         uses: actions/upload-artifact@v4
@@ -66,4 +61,4 @@ jobs:
       - name: Display ZAP Report Summary
         run: |
           echo "## Day-2 ZAP Scan Results" >> $GITHUB_STEP_SUMMARY
-          cat Day-2/artifacts/zap-report.html | grep -oP '(?<=<h2>).*?(?=</h2>)' | head -5 >> $GITHUB_STEP_SUMMARY
+          cat Day-2/artifacts/zap-report.html | grep -oP '(?<=<h2>).*?(?=</h2>)' | head -5 >> $GITHUB_STEP_SUMMARY || echo "Report summary unavailable"
