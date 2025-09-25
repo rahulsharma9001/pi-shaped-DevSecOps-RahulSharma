@@ -28,12 +28,12 @@ jobs:
           cd Day-2/app
           pip install -r requirements.txt --timeout 100
 
-      - name: Run Flask app
+      - name: Run Flask app and wait
         run: |
           cd Day-2/app
           python app.py &
-          sleep 10  # Wait for app to start
-        background: true
+          # Wait until the app is responsive
+          while ! curl -s localhost:5000 > /dev/null; do sleep 1; done
 
       - name: Install ZAP dependencies
         run: |
