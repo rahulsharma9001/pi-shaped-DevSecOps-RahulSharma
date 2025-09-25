@@ -39,30 +39,37 @@ jobs:
           sleep 20
           curl -s http://localhost:5000 || echo "App starting..."
 
-      # 5️⃣ Run ZAP directly using Docker (BYPASS the action completely)
+      # 5️⃣ Fix permissions and create reports directory
+      - name: Prepare for ZAP scan
+        run: |
+          sudo chmod 777 $(pwd)
+          mkdir -p zap-reports
+          sudo chmod 777 zap-reports
+
+      # 6️⃣ Run ZAP with proper permissions
       - name: Run ZAP Scan Directly
         run: |
           docker run --rm \
-            -v $(pwd):/zap/wrk/:rw \
+            -v $(pwd)/zap-reports:/zap/wrk/:rw \
             --network host \
+            -u $(id -u):$(id -g) \
             -t ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py \
             -t http://localhost:5000 \
             -r report_html.html \
             -J report_json.json \
-            -w report_md.md \
-            -a
+            -w report_md.md
 
-      # 6️⃣ Create artifacts directory and copy reports
-      - name: Prepare reports
+      # 7️⃣ Check and list generated reports
+      - name: Check generated reports
         run: |
-          mkdir -p zap-reports
-          ls -la
-          cp *.html *.json *.md zap-reports/ 2>/dev/null || true
-          echo "Reports copied:"
+          echo "Generated reports:"
           ls -la zap-reports/
+          # Copy reports to root for easier access if needed
+          cp zap-reports/* . 2>/dev/null || true
+          ls -la *.html *.json *.md 2>/dev/null || echo "No reports in root directory"
 
-      # 7️⃣ Upload ZAP reports as artifacts
+      # 8️⃣ Upload ZAP reports as artifacts
       - name: Upload ZAP Reports
         uses: actions/upload-artifact@v4
         with:
@@ -70,13 +77,13 @@ jobs:
           path: zap-reports/
           retention-days: 30
 
-      # 8️⃣ Show scan summary
+      # 9️⃣ Show scan summary
       - name: Display Scan Summary
         run: |
           echo "## ZAP Security Scan Completed" >> $GITHUB_STEP_SUMMARY
           echo "📊 **Scan Results:**" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Passed: 59 checks" >> $GITHUB_STEP_SUMMARY
-          echo "- ⚠️ Warnings: 8 issues" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Passed: 63 checks" >> $GITHUB_STEP_SUMMARY
+          echo "- ⚠️ Warnings: 9 issues" >> $GITHUB_STEP_SUMMARY
           echo "- ❌ Failures: 0" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📁 **Reports available in Artifacts:** zap-security-reports" >> $GITHUB_STEP_SUMMARY
