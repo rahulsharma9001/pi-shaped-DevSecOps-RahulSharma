@@ -53,6 +53,7 @@ jobs:
           target: 'http://localhost:5000'
           fail_action: false           # Do not fail workflow on warnings/errors
           allow_issue_writing: false   # Disable GitHub issue creation
+          artifact_name: ""            # ✅ Disable ZAP artifact upload
           cmd_options: '-r report_html.html -J report_json.json -w report_md.md'
 
       # 7️⃣ Copy reports to artifacts folder
