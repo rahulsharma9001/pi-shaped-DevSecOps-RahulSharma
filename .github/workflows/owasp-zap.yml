@@ -1,0 +1,58 @@
+name: Day-2 OWASP ZAP DAST Scan
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'Day-2/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'Day-2/**'
+
+jobs:
+  zap-scan:
+    runs-on: ubuntu-latest
+    services:
+      app:
+        image: python:3.9-slim
+        command: >
+          sh -c "pip install -r requirements.txt --timeout 100 &&
+                 python app.py"
+        volumes:
+          - .:/workspace
+        working_dir: /workspace/Day-2/app
+        ports:
+          - 5000:5000
+        options: >-
+          --health-cmd "curl -f http://localhost:5000 || exit 1"
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install ZAP dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jre
+
+      - name: Run OWASP ZAP Scan
+        uses: zaproxy/action-baseline@v0.7.0
+        with:
+          target: 'http://localhost:5000'
+          cmd_options: '-quickprogress -quickurl http://localhost:5000 -quickout /github/workspace/Day-2/artifacts/zap-report.html'
+
+      - name: Upload ZAP Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: day2-zap-report
+          path: Day-2/artifacts/zap-report.html
+          retention-days: 7
+
+      - name: Display ZAP Report Summary
+        run: |
+          echo "## Day-2 ZAP Scan Results" >> $GITHUB_STEP_SUMMARY
+          cat Day-2/artifacts/zap-report.html | grep -oP '(?<=<h2>).*?(?=</h2>)' | head -5 >> $GITHUB_STEP_SUMMARY
