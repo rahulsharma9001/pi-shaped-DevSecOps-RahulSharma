@@ -38,7 +38,7 @@ jobs:
       - name: Install ZAP dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y default-jre
+          sudo apt-get install -y default-jre curl  # Added curl for health check
 
       - name: Run OWASP ZAP Scan
         uses: zaproxy/action-baseline@v0.7.0
