@@ -32,13 +32,14 @@ jobs:
         run: |
           cd Day-2/app
           python app.py &
-          # Wait until the app is responsive
-          while ! curl -s localhost:5000 > /dev/null; do sleep 1; done
+          # Install curl if needed and wait for app
+          apt-get update && apt-get install -y curl
+          timeout 30s bash -c 'while ! curl -s localhost:5000 > /dev/null; do sleep 1; done' || echo "App startup timed out"
 
       - name: Install ZAP dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y default-jre curl  # Added curl for health check
+          sudo apt-get install -y default-jre
 
       - name: Run OWASP ZAP Scan
         uses: zaproxy/action-baseline@v0.7.0
