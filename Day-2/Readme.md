@@ -196,7 +196,7 @@ def apply_cache_control(response):
 
 ## Core Concept Questions
 
-###1. What is the purpose of DAST and how does it complement other security testing methods?
+### 1. What is the purpose of DAST and how does it complement other security testing methods?
 
 Purpose of DAST: DAST, or Dynamic Application Security Testing, is like a security guard that checks your app while it’s running. It scans the app from the outside (like a hacker would) to find vulnerabilities such as missing security settings or weak spots that could be attacked. Unlike checking the code directly, DAST looks at how the app behaves in real-time.
 Complementing Other Methods: DAST works alongside other tests like Static Application Security Testing (SAST), which checks the code before it runs, and Software Composition Analysis (SCA), which looks at third-party libraries. Together, they cover all angles—SAST finds issues in the code, SCA spots library risks, and DAST catches runtime problems. This teamwork ensures a stronger, more secure app!
